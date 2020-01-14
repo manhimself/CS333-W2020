@@ -7,6 +7,10 @@
 #include "proc.h"
 #include "spinlock.h"
 
+#ifdef CS333_P2
+#include "uproc.h"
+#endif
+
 static char *states[] = {
 [UNUSED]    "unused",
 [EMBRYO]    "embryo",
@@ -117,6 +121,12 @@ allocproc(void)
   }
   p->state = EMBRYO;
   p->pid = nextpid++;
+
+  #ifdef CS333_P2
+  p->cpu_ticks_total = 0;
+  p->cpu_ticks_in = 0;
+  #endif 
+  
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -241,6 +251,12 @@ fork(void)
 
   acquire(&ptable.lock);
   np->state = RUNNABLE;
+  #ifdef CS333_P2
+	//copy uid and gid for the child process.
+	np->uid = curproc->uid;
+	np->gid = curproc->gid;
+	np->parent = curproc;
+	#endif
   release(&ptable.lock);
 
   return pid;
@@ -378,8 +394,13 @@ scheduler(void)
       idle = 0;  // not idle this timeslice
 #endif // PDX_XV6
       c->proc = p;
+
+
       switchuvm(p);
       p->state = RUNNING;
+      #ifdef CS333_P2
+      p->cpu_ticks_in = ticks;
+      #endif
       swtch(&(c->scheduler), p->context);
       switchkvm();
 
@@ -420,6 +441,9 @@ sched(void)
   if(readeflags()&FL_IF)
     panic("sched interruptible");
   intena = mycpu()->intena;
+  #ifdef CS333_P2
+  p->cpu_ticks_total += ticks - p->cpu_ticks_in;
+  #endif
   swtch(&p->context, mycpu()->scheduler);
   mycpu()->intena = intena;
 }
@@ -561,7 +585,28 @@ procdumpP3(struct proc *p, char *state_string)
 void
 procdumpP2(struct proc *p, char *state_string)
 {
-  cprintf("TODO for Project 2, delete this line and implement procdumpP2() in proc.c to print a row\n");
+	cprintf("%d\t", p->pid);
+  cprintf("%s\t\t", p->name);	
+	cprintf("%d\t",p->uid);
+	cprintf("%d\t",p->gid);
+	if(p->parent != NULL)
+		cprintf("%d\t",p->parent->pid);
+	else
+		cprintf("%d\t",p->pid);
+	
+	int T1 = (ticks-(p->start_ticks)) % 10;
+	int T2 = ((ticks-(p->start_ticks)) % 100 )/10;
+	int T3 = ((ticks-(p->start_ticks)) % 1000)/100;
+	int T4 = (ticks-(p->start_ticks)) / 1000;
+	cprintf("%d%s%d%d%d\t", T4,".",T3,T2,T1);
+	int cputicksDiff = p->cpu_ticks_total;
+	int T11 = cputicksDiff % 10;
+	int T22 = (cputicksDiff % 100) / 10;
+	int T33 = (cputicksDiff % 1000) / 100;
+	int T44 = (cputicksDiff / 1000);
+	cprintf("%d%s%d%d%d\t", T44,".",T33,T22,T11);
+	cprintf("%s\t", state_string);
+	cprintf("%d\t", p->sz);
   return;
 }
 #elif defined(CS333_P1)
@@ -752,3 +797,43 @@ assertState(struct proc *p, enum procstate state, const char * func, int line)
 }
 #endif
 
+
+
+
+#ifdef CS333_P2
+int
+getprocs(uint size, struct uproc *table)
+{
+
+  struct proc *p;
+	struct uproc *tmp;
+  acquire(&ptable.lock); 
+	int i = 0;
+	for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
+		if (i == size)
+			return size;
+		
+
+		if(p->state != UNUSED && p->state != EMBRYO)
+		{
+			tmp = &table[i];
+			tmp->pid = p->pid;
+	  	strncpy(tmp->name,p->name, STRMAX); 
+			tmp->uid = p->uid;
+			if(p->parent != NULL) 
+				tmp->ppid = p->parent->pid;
+			else
+				tmp->ppid = p->pid;
+
+			tmp->CPU_total_ticks = p-> cpu_ticks_total;
+			tmp->elapsed_ticks = p->cpu_ticks_in;
+			strncpy(tmp->state,states[p->state], STRMAX);
+			tmp->size = p->sz;
+			i++;
+		}
+  }
+  release(&ptable.lock);
+	return i;
+}
+#endif // end of P2

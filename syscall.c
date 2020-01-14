@@ -107,8 +107,18 @@ extern int sys_uptime(void);
 #ifdef PDX_XV6
 extern int sys_halt(void);
 #endif // PDX_XV6
+
 #ifdef CS333_P1
 extern int sys_date(void);
+#endif
+
+#ifdef CS333_P2
+extern int sys_getuid(void);
+extern int sys_getgid(void);
+extern int sys_getppid(void);
+extern int sys_setuid(void);
+extern int sys_setgid(void);
+extern int sys_getprocs(void);
 #endif
 
 static int (*syscalls[])(void) = {
@@ -136,9 +146,20 @@ static int (*syscalls[])(void) = {
 #ifdef PDX_XV6
 [SYS_halt]    sys_halt,
 #endif // PDX_XV6
+
 #ifdef CS333_P1
 [SYS_date]	  sys_date,
 #endif
+
+#ifdef CS333_P2
+[SYS_getuid]  sys_getuid,
+[SYS_getgid]  sys_getgid,
+[SYS_getppid] sys_getppid,
+[SYS_setuid]  sys_setuid,
+[SYS_setgid]  sys_setgid,
+[SYS_getprocs] sys_getprocs,
+#endif
+
 };
 
 #ifdef PRINT_SYSCALLS
@@ -170,6 +191,16 @@ static char *syscallnames[] = {
 #ifdef CS333_P1
 	[SYS_date]		"date",
 #endif
+
+#ifdef CS333_P2
+	[SYS_getuid]  "getuid",
+	[SYS_getgid]  "getgid",
+	[SYS_getppid] "getppid",
+	[SYS_setuid]  "setuid",
+	[SYS_setgid]  "setgid",
+	[SYS_getprocs] "getprocs",
+#endif
+
 };
 #endif // PRINT_SYSCALLS
 
