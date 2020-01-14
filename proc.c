@@ -544,13 +544,42 @@ kill(int pid)
 // No lock to avoid wedging a stuck machine further.
 
 #if defined(CS333_P4)
-// TODO for Project 4, define procdumpP4() here
+void
+procdumpP4(struct proc *p, char *state_string)
+{
+  cprintf("TODO for Project 4, delete this line and implement procdumpP4() in proc.c to print a row\n");
+  return;
+}
 #elif defined(CS333_P3)
-// TODO for Project 3, define procdumpP3() here
+void
+procdumpP3(struct proc *p, char *state_string)
+{
+  cprintf("TODO for Project 3, delete this line and implement procdumpP3() in proc.c to print a row\n");
+  return;
+}
 #elif defined(CS333_P2)
-// TODO for Project 2, define procdumpP2() here
+void
+procdumpP2(struct proc *p, char *state_string)
+{
+  cprintf("TODO for Project 2, delete this line and implement procdumpP2() in proc.c to print a row\n");
+  return;
+}
 #elif defined(CS333_P1)
-// TODO for Project 1, define procdumpP1() here
+void
+procdumpP1(struct proc *p, char *state_string)
+{
+	cprintf("%d\t", p->pid);
+  cprintf("%s\t\t", p->name);	
+	int T1 = (ticks-(p->start_ticks)) % 10;
+	int T2 = ((ticks-(p->start_ticks)) % 100 )/10;
+	int T3 = ((ticks-(p->start_ticks)) % 1000)/100;
+	int T4 = (ticks-(p->start_ticks)) / 1000;
+	cprintf("%d%s%d%d%d\t", T4,".",T3,T2,T1);
+	cprintf("%s\t", state_string);
+	cprintf("%d\t", p->sz);
+
+  return;
+}
 #endif
 
 void
@@ -562,13 +591,13 @@ procdump(void)
   uint pc[10];
 
 #if defined(CS333_P4)
-#define HEADER "\nPID\tName         UID\tGID\tPPID\tPrio\tElapsed\tCPU\tState\tSize\t PCs\n"
+#define HEADER "\nPID\tName\t\tUID\tGID\tPPID\tPrio\tElapsed\tCPU\tState\tSize\t PCs\n"
 #elif defined(CS333_P3)
-#define HEADER "\nPID\tName         UID\tGID\tPPID\tElapsed\tCPU\tState\tSize\t PCs\n"
+#define HEADER "\nPID\tName\t\tUID\tGID\tPPID\tElapsed\tCPU\tState\tSize\t PCs\n"
 #elif defined(CS333_P2)
-#define HEADER "\nPID\tName         UID\tGID\tPPID\tElapsed\tCPU\tState\tSize\t PCs\n"
+#define HEADER "\nPID\tName\t\tUID\tGID\tPPID\tElapsed\tCPU\tState\tSize\t PCs\n"
 #elif defined(CS333_P1)
-#define HEADER "\nPID\tName         Elapsed\tState\tSize\t PCs\n"
+#define HEADER "\nPID\tName\t\tElapsed\tState\tSize\t PCs\n"
 #else
 #define HEADER "\n"
 #endif
