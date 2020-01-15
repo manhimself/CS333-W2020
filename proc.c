@@ -586,7 +586,11 @@ void
 procdumpP2(struct proc *p, char *state_string)
 {
 	cprintf("%d\t", p->pid);
-  cprintf("%s\t\t", p->name);	
+  char name_str[5];
+  name_str[5] = '\0';
+  strncpy(name_str, p->name, 5);
+
+  cprintf("%s\t\t", name_str);	
 	cprintf("%d\t",p->uid);
 	cprintf("%d\t",p->gid);
 	if(p->parent != NULL)

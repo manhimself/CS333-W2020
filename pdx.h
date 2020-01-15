@@ -24,4 +24,10 @@
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
+#ifdef CS333_P2
+#define d_uid 0 //default uid
+#define d_gid 0 //default gid
+#endif
+
+
 #endif  // PDX_INCLUDE

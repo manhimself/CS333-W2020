@@ -18,8 +18,12 @@ int main(int argc, char *argv[])
 	int max = atoi(argv[1]);
 	struct uproc *table = malloc(max *sizeof(struct uproc));
 	int numprocs = 0;
-	numprocs = getprocs(max,table);
-
+	uint ret;
+	ret = numprocs = getprocs(max,table);
+	if(ret < 0){
+		printf(1, "%s", "ERROR, getprocs returned -1");
+		exit();
+	}
 	printf(1, "%s", HEADER);
 	
 	int T11,T22,T33,T44,T1,T2,T3,T4;
