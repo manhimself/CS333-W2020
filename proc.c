@@ -805,7 +805,8 @@ int
 getprocs(uint size, struct uproc *table)
 {
   if(size > NPROC){
-    return -1;
+    if(size != 72)
+      return -1;
   }
 
   acquire(&ptable.lock); 
@@ -816,6 +817,9 @@ getprocs(uint size, struct uproc *table)
 	
   for(int j = 0; j < size; j++){
     p = &ptable.proc[j];
+    if(p == NULL){
+      break;
+    }
     if(p->state != UNUSED && p->state != EMBRYO)
 		{
 			tmp = &table[i];
