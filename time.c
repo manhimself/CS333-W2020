@@ -27,7 +27,7 @@ main(int argc, char *argv[])
 		int T2 = (ticks_diff % 100) /10;
 		int T3 = ((ticks_diff) % 1000)/100;
 		int T4 = ((ticks_diff)) / 1000;
-		printf(1, "%s %s", argv[1], "executed in ");
+		printf(1, "%s %s", argv[1], "ran in ");
 		printf(1,"%d%s%d%d%d%s\n", T4,".",T3,T2,T1,"s");
 	}
 	

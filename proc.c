@@ -804,16 +804,42 @@ assertState(struct proc *p, enum procstate state, const char * func, int line)
 int
 getprocs(uint size, struct uproc *table)
 {
+  if(size > NPROC){
+    return -1;
+  }
+
+  acquire(&ptable.lock); 
+  int i = 0;
 
   struct proc *p;
 	struct uproc *tmp;
-  acquire(&ptable.lock); 
-	int i = 0;
-	for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+	
+  for(int j = 0; j < size; j++){
+    p = &ptable.proc[j];
+    if(p->state != UNUSED && p->state != EMBRYO)
+		{
+			tmp = &table[i];
+			tmp->pid = p->pid;
+	  	strncpy(tmp->name,p->name, STRMAX); 
+			tmp->uid = p->uid;
+			if(p->parent != NULL) 
+				tmp->ppid = p->parent->pid;
+			else
+				tmp->ppid = p->pid;
 
-		if (i == size)
-			return size;
-		
+			tmp->CPU_total_ticks = p-> cpu_ticks_total;
+			tmp->elapsed_ticks = p->cpu_ticks_in;
+			strncpy(tmp->state,states[p->state], STRMAX);
+			tmp->size = p->sz;
+			i++;
+		} 
+  }
+
+  /*
+  struct proc *p;
+	struct uproc *tmp;
+	
+	for(p = ptable.proc; p < ptable.proc + NPROC; ++p){
 
 		if(p->state != UNUSED && p->state != EMBRYO)
 		{
@@ -832,7 +858,10 @@ getprocs(uint size, struct uproc *table)
 			tmp->size = p->sz;
 			i++;
 		}
+    
   }
+  */
+
   release(&ptable.lock);
 	return i;
 }
