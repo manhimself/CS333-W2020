@@ -22,7 +22,8 @@ int main(int argc, char *argv[])
 
 	printf(1, "%s", HEADER);
 	
-	int T11,T22,T33,T44,T1,T2,T3,T4,up;
+	int T11,T22,T33,T44,T1,T2,T3,T4;
+	int up;
 	uint cputime;
 	for(int i = 0; i< numprocs; i++)
 	{
@@ -43,10 +44,10 @@ int main(int argc, char *argv[])
 
 
 		cputime = tmp->CPU_total_ticks;
-		T1 = (cputime-(tmp->elapsed_ticks)) % 10;
-		T2 = ((cputime-(tmp->elapsed_ticks)) % 100 )/10;
-		T3 = ((cputime-(tmp->elapsed_ticks)) % 1000)/100;
-		T4 = (cputime-(tmp->elapsed_ticks)) / 1000;
+		T1 = cputime % 10;
+		T2 = (cputime % 100 )/10;
+		T3 = (cputime % 1000)/100;
+		T4 = cputime / 1000;
 		printf(1,"%d%s%d%d%d\t", T4,".",T3,T2,T1);
 
 		printf(1, "%s\t", tmp->state);
