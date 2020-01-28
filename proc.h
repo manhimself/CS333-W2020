@@ -62,6 +62,10 @@ struct proc {
 	uint cpu_ticks_in;					 // ticks when scheduled
 	#endif
 
+  #ifdef CS333_P3
+  struct proc* next;
+  #endif
+
 
 };
 

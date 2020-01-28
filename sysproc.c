@@ -104,16 +104,15 @@ sys_halt(void)
 int
 sys_date(void)
 {
-	struct rtcdate *d;
-	
-	if(argptr(0, (void*)&d, sizeof(struct rtcdate)) <0)
-	{
-		return -1;
-	}
-	else{
-		cmostime(d);
-		return 0;
-	}
+  struct rtcdate *d;	
+  if(argptr(0, (void*)&d, sizeof(struct rtcdate)) <0)
+  {
+    return -1;
+  }
+  else{
+    cmostime(d);
+    return 0;
+  }
 }
 
 #endif
@@ -192,7 +191,7 @@ sys_getprocs(void)
 	struct uproc* table;
 	if(argint(0, &max)< 0)
 		return -1;
-	if(argptr(1, (void*)&table, sizeof(struct uproc*)) <0)
+	if(argptr(1, (void*)&table, sizeof(struct uproc*) * max) <0)
 	{
 		return -1;
 	}
