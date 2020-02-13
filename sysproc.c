@@ -202,3 +202,27 @@ sys_getprocs(void)
 
 
 #endif
+
+
+#ifdef CS333_P4
+int
+sys_setpriority(void)
+{
+	int pid;
+	int priority;
+	if(argint(0, &pid)< 0)
+		return -1;
+	if(argint(1, &priority) < 0 || argint(1,&priority) > MAXPRIO)
+		return -1;
+	return setpriority(pid, priority);
+}
+
+int
+sys_getpriority(void)
+{
+	int pid;
+	if(argint(0, &pid) < 0)
+		return -1;
+	return getpriority(pid);
+}
+#endif

@@ -29,5 +29,8 @@
 #define d_gid 0 //default gid
 #endif
 
+#ifdef CS333_P4
+#define MAXPRIO 4 //maxi priority level
+#endif
 
 #endif  // PDX_INCLUDE

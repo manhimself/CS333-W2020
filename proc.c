@@ -40,6 +40,12 @@ static struct {
   #ifdef CS333_P3
   struct ptrs list[statecount];
   #endif
+
+  #ifdef CS333_P4
+  struct ptrs ready[MAXPRIO + 1];
+  uint PromoteAtTime;
+  #endif
+
 } ptable;
 
 // list management function prototypes
@@ -1496,5 +1502,19 @@ zombiedump(void)
   release(&ptable.lock);
 }
 
+
+#endif
+
+
+#ifdef CS333_P4
+int setpriority(int pid, int priority)
+{
+  return -1;
+}
+
+int getpriority(int pid)
+{
+  return -1;
+}
 
 #endif
